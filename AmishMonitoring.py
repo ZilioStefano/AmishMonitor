@@ -51,7 +51,7 @@ def extract_data(ip, username, password):
 
         # tabella POOL
         POOL_TAB = soup.find('table', class_='table table-hover boardcss')
-        Soap = BeautifulSoup(str(POOL_TAB))
+        Soap = BeautifulSoup(str(POOL_TAB), 'html.parser')
         Temp_table = Soap.find('tbody').find_all('td')
         Temp_table_1 = Temp_table[2]
         T1_str = Temp_table_1.contents[0]
@@ -62,7 +62,7 @@ def extract_data(ip, username, password):
 
         # tabella Ventole
         FANS_TAB = soup.find('table', class_='table table-hover fancss')
-        Soap = BeautifulSoup(str(FANS_TAB))
+        Soap = BeautifulSoup(str(FANS_TAB), 'html.parser')
         Fan_table = Soap.find('tbody').find_all('td')
         Fan_table_1 = Fan_table[1]
         Fan_1_str = Fan_table_1.contents[0]
@@ -71,12 +71,9 @@ def extract_data(ip, username, password):
         Fan_2_str = Fan_table_2.contents[0]
         Fan_2 = float(Fan_2_str)
 
-
     except Exception as e:
         print(f"Erreur lors de la connexion au mineur {ip}: {e}")
-        disconnected_colored = colorize("Disconnected", False)  # False pour coloriser en rouge
-        return [ip, 'Erreur', 'No Network', 'Unknown', 'Unknown', '0 GH/s', '0 GH/s', '0d 0h 0m 0s',
-                disconnected_colored]
+        return [ip, 'Erreur', 'No Network', 'Unknown', 'Unknown', '0 GH/s', '0 GH/s', '0d 0h 0m 0s']
 
     finally:
         driver.quit()
@@ -96,25 +93,40 @@ def read_data(conn, cursor):
     base_ip = "192.168.10"
 
     for ip in ip_last_values:
-        curr_ip = base_ip + "." + ip
-        print("Processing "+curr_ip)
-        df = extract_data(curr_ip, username, password)
 
-        date = datetime.strftime(df["timestamp"][0], "%Y-%m-%d %H:%M:%S")
-        insert_string = f"INSERT INTO {ip} (time_stamp, hashrate, T1, T2, Fan_1, Fan_2) VALUES ('{date}', {df['hashrate'][0]}, {df['T1'][0]},{df['T2'][0]},{df['Fan 1'][0]},{df['Fan 2'][0]});"
-        cursor.execute(insert_string)
-        conn.commit()
+        try:
+            curr_ip = base_ip + "." + ip
+            print("Processing "+curr_ip)
+            df = extract_data(curr_ip, username, password)
+
+            date = datetime.strftime(df["timestamp"][0], "%Y-%m-%d %H:%M:%S")
+            insert_string = f"INSERT INTO {ip} (time_stamp, hashrate, T1, T2, Fan_1, Fan_2) VALUES ('{date}', {df['hashrate'][0]}, {df['T1'][0]},{df['T2'][0]},{df['Fan 1'][0]},{df['Fan 2'][0]});"
+            cursor.execute(insert_string)
+            conn.commit()
+        except Exception as err:
+            print(err)
 
 
 if __name__=="__main__":
 
-    conn = pyodbc.connect(r"DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};"
-                          r"DBQ=C:\Users\Stefano Trevisan\Desktop\2. Progetti da continuare\139. Prova lettura dati IP\AMISH\Amish Monitor\MiningData.accdb;")
+    mode = "RUN"
+
+    if mode=="TEST":
+        link = r"C:\Users\Stefano Trevisan\Desktop\2. Progetti da continuare\139. Prova lettura dati IP\AMISH\Amish Monitor\MiningData.accdb"
+    else:
+        link = r"C:\Users\Sviluppo_Software_ZG\Desktop\AmishMonitor\MiningData.accdb"
+
+    conn = pyodbc.connect(r"DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\Sviluppo_Software_ZG\Desktop\AmishMonitor\MiningData.accdb;")
     cur = conn.cursor()
 
     dt = 5*60
 
     while True:
-        read_data(conn, cur)
+        try:
+            read_data(conn, cur)
+            # conn.close()
+        except Exception as err:
+            print(err)
+
         time.sleep(dt)
 
