@@ -1,6 +1,8 @@
-import urllib.request, json
+import urllib.request
+import json
 from datetime import datetime
 import pandas as pd
+
 
 def extract_data(ip):
     URL = 'http://192.168.10.' + str(ip) + '/mcb/cgminer?cgminercmd=devs'
@@ -39,11 +41,13 @@ def read_DC(cursor, conn):
     ips = [218, 219]
 
     for ip in ips:
-        print("Processing " + str(ip))
+        print("Processing MiniDOGEIII @ 192.168.10." + str(ip))
         df = extract_data(ip)
 
         date = datetime.strftime(df["timestamp"][0], "%Y-%m-%d %H:%M:%S")
-        insert_string = f"INSERT INTO {ip} (time_stamp, hashrate, powerplan, fanspeed, fanspeed_limit, hw_error_ratio, Temp) VALUES ('{date}', {df['hashrate'][0]}, {df['powerplan'][0]},{df['fanspeed'][0]},{df['fanspeed_limit'][0]},{df['hw_error_ratio'][0]},{df['Temp'][0]});"
+        insert_string = (f"INSERT INTO {ip} (time_stamp, hashrate, powerplan, fanspeed, fanspeed_limit, hw_error_ratio,"
+                         f"Temp) VALUES ('{date}', {df['hashrate'][0]}, {df['powerplan'][0]},{df['fanspeed'][0]},"
+                         f"{df['fanspeed_limit'][0]},{df['hw_error_ratio'][0]},{df['Temp'][0]});")
         cursor.execute(insert_string)
         conn.commit()
-
+        print("192.168.10." + str(ip)+" processed correctly")
