@@ -17,9 +17,11 @@ def extract_data(ip):
     fanspeed_lim = float(fanspeed_lim_string.replace('rpm', ''))
     temp_value = float(data["temp"][0].replace('°C', ''))
 
+    hr = data["hashrate"][0]
+
     df = {
         "timestamp": datetime.now(),
-        "hashrate": data["hashrate"][0],
+        "hashrate": hr,
         "powerplan": data["powerplan"][0],
         "fanspeed": fanspeed_now,
         "fanspeed_limit": fanspeed_lim,

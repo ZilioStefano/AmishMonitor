@@ -122,8 +122,8 @@ if __name__=="__main__":
     else:
         link = r"C:\Users\Sviluppo_Software_ZG\Desktop\AmishMonitor\MiningData.accdb"
 
-    # conn = pyodbc.connect(r"DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\Sviluppo_Software_ZG\Desktop\AmishMonitor\MiningData.accdb;")
-    conn = pyodbc.connect(r"DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\Stefano Trevisan\Desktop\2. Progetti da continuare\139. Prova lettura dati IP\AMISH\Amish Monitor\MiningData.accdb;")
+    conn = pyodbc.connect(r"DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\Sviluppo_Software_ZG\Desktop\AmishMonitor\MiningData.accdb;")
+    # conn = pyodbc.connect(r"DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\Stefano Trevisan\Desktop\2. Progetti da continuare\139. Prova lettura dati IP\AMISH\Amish Monitor\MiningData.accdb;")
 
     cur = conn.cursor()
 
