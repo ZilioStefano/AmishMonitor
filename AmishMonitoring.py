@@ -8,6 +8,7 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 import pyodbc
+from prova_dogecoin import read_DC
 
 
 def extract_data(ip, username, password):
@@ -84,8 +85,7 @@ def extract_data(ip, username, password):
     return df
 
 
-def read_data(conn, cursor):
-
+def read_data_IR(cursor):
     username = "admin"
     password = "12345678"
 
@@ -107,16 +107,24 @@ def read_data(conn, cursor):
             print(err)
 
 
+def read_data(conn, cursor):
+
+    read_DC(cursor, conn)
+    read_data_IR(cursor)
+
+
 if __name__=="__main__":
 
     mode = "RUN"
 
-    if mode=="TEST":
+    if mode == "TEST":
         link = r"C:\Users\Stefano Trevisan\Desktop\2. Progetti da continuare\139. Prova lettura dati IP\AMISH\Amish Monitor\MiningData.accdb"
     else:
         link = r"C:\Users\Sviluppo_Software_ZG\Desktop\AmishMonitor\MiningData.accdb"
 
-    conn = pyodbc.connect(r"DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\Sviluppo_Software_ZG\Desktop\AmishMonitor\MiningData.accdb;")
+    # conn = pyodbc.connect(r"DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\Sviluppo_Software_ZG\Desktop\AmishMonitor\MiningData.accdb;")
+    conn = pyodbc.connect(r"DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\Stefano Trevisan\Desktop\2. Progetti da continuare\139. Prova lettura dati IP\AMISH\Amish Monitor\MiningData.accdb;")
+
     cur = conn.cursor()
 
     dt = 5*60
