@@ -10,6 +10,7 @@ import pandas as pd
 
 
 def extract_data(ip, username, password):
+
     url = f"http://{ip}/user/login"
     chrome_options = Options()
     chrome_options.add_argument("--headless")
@@ -77,6 +78,9 @@ def read_IR(cursor, conn):
     base_ip = "192.168.10"
 
     for ip in ip_last_values:
+
+        if ip == 228:
+            B=2
 
         try:
             curr_ip = base_ip + "." + ip
