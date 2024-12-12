@@ -53,7 +53,6 @@ def process_last_24(ips, ftp):
 
 
 def process_daily_mean(ips, ftp, cursor):
-
     media_string = "_media_giornaliera"
     for ip in ips:
         print(ip)
@@ -95,7 +94,7 @@ def process_daily_mean(ips, ftp, cursor):
             last_id = table["ID"].iloc[-1]
 
             if ip > 220:
-                insert_string = (f"UPDATE {ip}{media_string} SET hashrate = '{means["hashrate"]}', T1 = '{means["T1"]}', T2 = '{means["T2"]}', Fan_1 = '{means["Fan_1"]}', Fan_2 = '{means["Fan_2"]}'  WHERE ID={str(last_id)};"
+                insert_string = (f"UPDATE {ip}{media_string} SET hashrate = '{float(means["hashrate"].replace(",","."))}', T1 = '{means["T1"]}', T2 = '{means["T2"]}', Fan_1 = '{means["Fan_1"]}', Fan_2 = '{means["Fan_2"]}'  WHERE ID={str(last_id)};"
                 )
             else:
                 insert_string = (
@@ -135,11 +134,11 @@ def process_data(conn, cursor):
 
 
 if __name__ == "__main__":
-    conn = pyodbc.connect(r"DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\Sviluppo_Software_ZG"
-                          r"\Desktop\AmishMonitor2\MiningData.accdb;")
-    # conn = pyodbc.connect(r"DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\Stefano Trevisan\Desktop"
-    #                       r"\2. Progetti da continuare\139. Prova lettura dati IP\AMISH\Amish Monitor"
-    #                       r"\MiningData.accdb;")
+    # conn = pyodbc.connect(r"DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\Sviluppo_Software_ZG"
+    #                       r"\Desktop\AmishMonitor2\MiningData.accdb;")
+    conn = pyodbc.connect(r"DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\Stefano Trevisan\Desktop"
+                          r"\2. Progetti da continuare\139. Prova lettura dati IP\AMISH\Amish Monitor"
+                          r"\MiningData.accdb;")
 
     cur = conn.cursor()
 
